@@ -11,8 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Default middleware settings
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // Default exception handling
     })->create();
