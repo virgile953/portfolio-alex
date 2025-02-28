@@ -31,8 +31,8 @@
                 <div class="col-md-6 text-end">
                     <p>
                         <strong>Invoice #:</strong> {{ $invoice->invoice_number }}<br>
-                        <strong>Date:</strong> {{ $invoice->invoice_date instanceof \DateTime ? $invoice->invoice_date->format('m/d/Y') : $invoice->invoice_date }}<br>
-                        <strong>Due Date:</strong> {{ $invoice->due_date instanceof \DateTime ? $invoice->due_date->format('m/d/Y') : $invoice->due_date }}<br>
+                        <strong>Date:</strong> {{ $invoice->invoice_date ? $invoice->invoice_date->format('m/d/Y') : 'Not set' }}<br>
+                        <strong>Due Date:</strong> {{ $invoice->due_date ? $invoice->due_date->format('m/d/Y') : 'Not set' }}<br>
                         <strong>Prepared By:</strong> {{ $invoice->prepared_by }}
                     </p>
                 </div>
