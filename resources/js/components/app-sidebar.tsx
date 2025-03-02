@@ -22,6 +22,10 @@ const mainNavItems: NavItem[] = [
         title: 'Tests',
         url: '/tests',
         icon: LayoutGrid,
+    },    {
+        title: 'projets',
+        url: '/projectsManager',
+        icon: LayoutGrid,
     },
 
 ];

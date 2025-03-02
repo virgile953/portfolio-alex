@@ -15,6 +15,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('tests', function () {
         return Inertia::render(component: 'tests');
     })->name('tests');
+    Route::get('projectsManager', function () {
+        return Inertia::render(component: 'projectsManager');
+    })->name('Projects');
 });
 
 require __DIR__.'/settings.php';
