@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
+use App\Http\Controllers\ProjectController;
 
 Route::get('/', function (): InertiaResponse {
     return Inertia::render('welcome');
@@ -17,7 +18,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('tests');
     Route::get('projectsManager', function () {
         return Inertia::render(component: 'projectsManager');
-    })->name('Projects');
+    })->name(name: 'Projects');
+
+    // Move the projects resource route inside the auth middleware if you want it protected
+    Route::resource('projectsManager', ProjectController::class);
+    Route::resource('projects', ProjectController::class);
 });
 
 require __DIR__.'/settings.php';
