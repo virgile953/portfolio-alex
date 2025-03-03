@@ -252,7 +252,7 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
                             {parsedImages.map((image, index) => (
                                 <div key={index} className="group relative">
                                     <img
-                                        src={imageUrls?.find(url => url.includes(image)) || getFileUrl(image)}
+                                        src={getFileUrl(image)}
                                         alt={`Existing image ${index + 1}`}
                                         className="h-24 w-24 rounded border object-cover"
                                     />
