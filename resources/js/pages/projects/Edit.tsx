@@ -180,7 +180,14 @@ export default function Edit({ project }: Props) {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <h1 className="mb-6 text-3xl font-bold">Edit Project: {project.title}</h1>
 
-                <ProjectForm data={data} setData={setData} errors={errors} processing={processing} handleSubmit={handleSubmit} isEditing={true} />
+                <ProjectForm
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    handleSubmit={handleSubmit}
+                    isEditing={true}
+                />
             </div>
         </AppLayout>
     );

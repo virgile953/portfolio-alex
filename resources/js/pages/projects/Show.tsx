@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { useEffect, useMemo } from 'react';
+import { getFileUrl } from '@/utils/storage';
 
 interface Project {
     id: number;
@@ -10,19 +11,23 @@ interface Project {
     description: string;
     type: string;
     url: string | null;
-    images: string | null;  // This is actually a JSON string, not an array
-    stl_files: string | null;  // This is actually a JSON string, not an array
+    images: string | null; // This is actually a JSON string, not an array
+    stl_files: string | null; // This is actually a JSON string, not an array
     materials: string | null;
-    specifications: string | {
-        dimensions?: string;
-        weight?: string;
-        print_time?: string;
-        print_settings?: string;
-        [key: string]: any;
-    } | null;
+    specifications:
+        | string
+        | {
+              dimensions?: string;
+              weight?: string;
+              print_time?: string;
+              print_settings?: string;
+              [key: string]: any;
+          }
+        | null;
     completion_date: string | null;
     featured: boolean;
 }
+
 
 interface Props {
     project: Project;
@@ -37,7 +42,7 @@ export default function Show({ project }: Props) {
         {
             title: project.title,
             href: route('projects.show', project.id),
-        }
+        },
     ];
 
     // Parse JSON strings into arrays
@@ -84,11 +89,12 @@ export default function Show({ project }: Props) {
         return Object.entries(parsedSpecifications)
             .filter(([_, value]) => value && String(value).trim() !== '')
             .map(([key, value]) => ({
-                label: key.replace(/_/g, ' ')
+                label: key
+                    .replace(/_/g, ' ')
                     .split(' ')
-                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                     .join(' '),
-                value: String(value)
+                value: String(value),
             }));
     }, [parsedSpecifications]);
 
@@ -103,35 +109,29 @@ export default function Show({ project }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={project.title} />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="flex justify-between items-center mb-6">
+                <div className="mb-6 flex items-center justify-between">
                     <h1 className="text-3xl font-bold">{project.title}</h1>
                     <div className="flex gap-2">
-                        <Link
-                            href={route('projects.edit', project.id)}
-                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                        >
+                        <Link href={route('projects.edit', project.id)} className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
                             Edit
                         </Link>
-                        <Link
-                            href={route('projects.index')}
-                            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                        >
+                        <Link href={route('projects.index')} className="rounded bg-gray-300 px-4 py-2 hover:bg-gray-400">
                             Back
                         </Link>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                     {/* 3D Model Viewer */}
-                    <div className="bg-gray-100 rounded-lg p-0 h-[500px] overflow-hidden">
+                    <div className="h-[500px] overflow-hidden rounded-lg bg-gray-100 p-0">
                         {stlFiles.length > 0 ? (
                             <StlViewer
-                                filepath={`/storage/${stlFiles[0]}`}
+                                filepath={getFileUrl(stlFiles[0])}
                                 width="100%"
                                 height="100%"
                             />
                         ) : (
-                            <div className="flex items-center justify-center h-full bg-gray-200 rounded-lg">
+                            <div className="flex h-full items-center justify-center rounded-lg bg-gray-200">
                                 <p className="text-gray-500">No 3D model available</p>
                             </div>
                         )}
@@ -142,18 +142,16 @@ export default function Show({ project }: Props) {
                         <div className="mb-4">
                             <div className="flex items-center">
                                 <h2 className="text-2xl font-semibold">{project.title}</h2>
-                                {project.featured && (
-                                    <span className="ml-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">Featured</span>
-                                )}
+                                {project.featured && <span className="ml-2 rounded bg-yellow-100 px-2 py-1 text-xs text-yellow-800">Featured</span>}
                             </div>
-                            <p className="text-gray-600 mt-1">{project.type}</p>
+                            <p className="mt-1 text-gray-600">{project.type}</p>
                         </div>
 
-                        <div className="prose max-w-none mb-6">
+                        <div className="prose mb-6 max-w-none">
                             <p>{project.description}</p>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-4 mb-6">
+                        <div className="mb-6 grid grid-cols-1 gap-4">
                             {project.materials && (
                                 <div>
                                     <h3 className="text-lg font-semibold">Materials</h3>
@@ -185,12 +183,7 @@ export default function Show({ project }: Props) {
                             {project.url && (
                                 <div>
                                     <h3 className="text-lg font-semibold">Project URL</h3>
-                                    <a
-                                        href={project.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-600 hover:underline"
-                                    >
+                                    <a href={project.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
                                         {project.url}
                                     </a>
                                 </div>
@@ -200,14 +193,14 @@ export default function Show({ project }: Props) {
                         {/* Project Images */}
                         {images.length > 0 && (
                             <div>
-                                <h3 className="text-lg font-semibold mb-2">Images</h3>
+                                <h3 className="mb-2 text-lg font-semibold">Images</h3>
                                 <div className="grid grid-cols-2 gap-2">
                                     {images.map((image: string, index: number) => (
                                         <img
                                             key={index}
-                                            src={`/storage/${image}`}
+                                            src={getFileUrl(image)}
                                             alt={`${project.title} - Image ${index + 1}`}
-                                            className="rounded-lg w-full h-auto"
+                                            className="h-auto w-full rounded-lg"
                                         />
                                     ))}
                                 </div>

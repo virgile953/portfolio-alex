@@ -27,12 +27,30 @@ interface ProjectFormProps {
     processing: boolean;
     handleSubmit: (e: React.FormEvent) => void;
     isEditing: boolean;
+    imageUrls?: string[];
+    stlUrls?: string[];
 }
 
-export default function ProjectForm({ data, setData, errors, processing, handleSubmit, isEditing }: ProjectFormProps) {
+export default function ProjectForm({ data, setData, errors, processing, handleSubmit, isEditing, imageUrls, stlUrls }: ProjectFormProps) {
     // States to track parsed files for display
     const [parsedImages, setParsedImages] = useState<string[]>([]);
     const [parsedStlFiles, setParsedStlFiles] = useState<string[]>([]);
+
+    // Add this utility function to generate S3 URLs
+    const getFileUrl = (path: string) => {
+        if (!path) return '';
+
+        // Get base URL from environment - this should match your S3 settings
+        const baseUrl = 'https://367be3a2035528943240074d0096e0cd.r2.cloudflarestorage.com';
+        const bucket = 'fls-9e568ca0-9700-4e8f-976c-b37c71a870e6';
+
+        // Handle both formats: with or without bucket name
+        if (path.startsWith('projects/')) {
+            return `${baseUrl}/${bucket}/${path}`;
+        }
+
+        return path; // Already a full URL or other format
+    };
 
     // console.log("ProjectForm rendering with data:", data);
 
@@ -234,7 +252,7 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
                             {parsedImages.map((image, index) => (
                                 <div key={index} className="group relative">
                                     <img
-                                        src={`/storage/${image}`}
+                                        src={imageUrls?.find(url => url.includes(image)) || getFileUrl(image)}
                                         alt={`Existing image ${index + 1}`}
                                         className="h-24 w-24 rounded border object-cover"
                                     />

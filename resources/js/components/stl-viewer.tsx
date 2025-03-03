@@ -126,8 +126,7 @@ export default function StlViewer({ filepath, width = '100%', height = '100%' }:
 
     // Handle loading the STL file
     useEffect(() => {
-        if (!filepath || !sceneRef.current || !cameraRef.current || !rendererRef.current ||
-            !containerRef.current || dimensions.width === 0) return;
+        if (!filepath || !sceneRef.current || !cameraRef.current || !rendererRef.current) return;
 
         const scene = sceneRef.current;
         const camera = cameraRef.current;
@@ -232,17 +231,17 @@ export default function StlViewer({ filepath, width = '100%', height = '100%' }:
             return;
         }
 
-        // Load from server if not cached
+        // Load from server
         const loader = new STLLoader();
         loader.load(
-            filepath,
-            (geometry: THREE.BufferGeometry<THREE.NormalBufferAttributes>) => {
+            filepath, // This now comes directly as the full URL from stl_urls
+            (geometry) => {
                 // Cache the geometry
                 geometryCache.set(filepath, geometry.clone());
                 setupMesh(geometry);
             },
             undefined,
-            (error: { message: any; }) => {
+            (error) => {
                 console.error('Error loading STL file:', error);
 
                 // Show error message
@@ -261,7 +260,7 @@ export default function StlViewer({ filepath, width = '100%', height = '100%' }:
                 cancelAnimationFrame(animationFrameRef.current);
             }
         };
-    }, [filepath, dimensions.width, dimensions.height]);
+    }, [filepath]);
 
     return (
         <div
