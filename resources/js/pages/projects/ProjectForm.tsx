@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { getFileUrl } from '@/utils/storage';
 
 interface Project {
     id?: number;
@@ -36,23 +37,6 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
     const [parsedImages, setParsedImages] = useState<string[]>([]);
     const [parsedStlFiles, setParsedStlFiles] = useState<string[]>([]);
 
-    // Add this utility function to generate S3 URLs
-    const getFileUrl = (path: string) => {
-        if (!path) return '';
-
-        // Get base URL from environment - this should match your S3 settings
-        const baseUrl = 'https://367be3a2035528943240074d0096e0cd.r2.cloudflarestorage.com';
-        const bucket = 'fls-9e568ca0-9700-4e8f-976c-b37c71a870e6';
-
-        // Handle both formats: with or without bucket name
-        if (path.startsWith('projects/')) {
-            return `${baseUrl}/${bucket}/${path}`;
-        }
-
-        return path; // Already a full URL or other format
-    };
-
-    // console.log("ProjectForm rendering with data:", data);
 
     // Parse JSON strings for display if data.images or data.stl_files are strings
     useEffect(() => {

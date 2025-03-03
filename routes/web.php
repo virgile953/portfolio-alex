@@ -293,7 +293,7 @@ Route::get('/file/{path}', function ($path) {
 
         // Security check - prevent directory traversal attacks
         if (strpos($path, '..') !== false || strpos($path, './') !== false) {
-            abort(403, 'Invalid file path');
+            abort(403, message: 'Invalid file path');
         }
 
         // Check if the file exists in the S3/R2 bucket
@@ -310,7 +310,7 @@ Route::get('/file/{path}', function ($path) {
         }
 
         // Create a temporary stream from the S3 file
-        $stream = Storage::disk('s3')->readStream($path);
+        $stream = Storage::disk('s3')->readStream(path: $path);
 
         // Log the access
         \Illuminate\Support\Facades\Log::info("File accessed via proxy", [
