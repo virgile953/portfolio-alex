@@ -69,7 +69,7 @@ export default function Index({ projects = [] }: Props) {
                             <div key={project.id} className="overflow-hidden rounded-lg border">
                                 {/* STL Viewer */}
                                 {stlFiles.length > 0 ? (
-                                    <div className="h-[300px]">
+                                    <div className="">
                                         <StlViewer
                                             filepath={getFileUrl(stlFiles[0])}
                                             width="100%"
