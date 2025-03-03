@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { getFileUrl } from '@/utils/storage';
+import { useEffect, useState } from 'react';
 
 interface Project {
     id?: number;
@@ -36,7 +36,6 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
     // States to track parsed files for display
     const [parsedImages, setParsedImages] = useState<string[]>([]);
     const [parsedStlFiles, setParsedStlFiles] = useState<string[]>([]);
-
 
     // Parse JSON strings for display if data.images or data.stl_files are strings
     useEffect(() => {
@@ -92,7 +91,7 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
         // Special handling for STL files
         if (field === 'stl_files') {
             // Validate file extension manually
-            const validFiles = fileArray.filter(file => {
+            const validFiles = fileArray.filter((file) => {
                 const extension = file.name.split('.').pop()?.toLowerCase();
                 if (extension !== 'stl') {
                     console.error(`File ${file.name} is not an STL file`);
@@ -119,32 +118,24 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
     const removeFile = (field: 'images' | 'stl_files', index: number) => {
         if (field === 'images') {
             // Create a copy of the current data.images array
-            const currentImages = Array.isArray(data.images)
-                ? [...data.images]
-                : parsedImages.length > 0
-                    ? [...parsedImages]
-                    : [];
+            const currentImages = Array.isArray(data.images) ? [...data.images] : parsedImages.length > 0 ? [...parsedImages] : [];
 
             // Remove the file at the specified index
             currentImages.splice(index, 1);
 
             // Update both the parent's data and our local state
             setData('images', currentImages.length > 0 ? currentImages : null);
-            setParsedImages(currentImages.filter(item => typeof item === 'string') as string[]);
+            setParsedImages(currentImages.filter((item) => typeof item === 'string') as string[]);
 
             // console.log("After removal, images:", currentImages);
         } else {
             // Same approach for stl_files
-            const currentStlFiles = Array.isArray(data.stl_files)
-                ? [...data.stl_files]
-                : parsedStlFiles.length > 0
-                    ? [...parsedStlFiles]
-                    : [];
+            const currentStlFiles = Array.isArray(data.stl_files) ? [...data.stl_files] : parsedStlFiles.length > 0 ? [...parsedStlFiles] : [];
 
             currentStlFiles.splice(index, 1);
 
             setData('stl_files', currentStlFiles.length > 0 ? currentStlFiles : null);
-            setParsedStlFiles(currentStlFiles.filter(item => typeof item === 'string') as string[]);
+            setParsedStlFiles(currentStlFiles.filter((item) => typeof item === 'string') as string[]);
 
             // console.log("After removal, stl_files:", currentStlFiles);
         }
@@ -170,13 +161,7 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
 
                 <div>
                     <label className="mb-1 block">Type</label>
-                    <input
-                        type="text"
-                        name="type"
-                        value={data.type || ''}
-                        onChange={handleInputChange}
-                        className="w-full rounded border px-3 py-2"
-                    />
+                    <input type="text" name="type" value={data.type || ''} onChange={handleInputChange} className="w-full rounded border px-3 py-2" />
                     {errors.type && <div className="mt-1 text-sm text-red-500">{errors.type}</div>}
                 </div>
 
@@ -232,9 +217,9 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
 
                     {/* Existing images */}
                     {parsedImages.length > 0 && (
-                        <div className="mb-3 grid grid-cols-4 gap-2">
+                        <div className="mb-3 flex gap-6">
                             {parsedImages.map((image, index) => (
-                                <div key={index} className="group relative">
+                                <div key={index} className="group relative max-w-32">
                                     <img
                                         src={getFileUrl(image)}
                                         alt={`Existing image ${index + 1}`}
@@ -243,7 +228,7 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
                                     <button
                                         type="button"
                                         onClick={() => removeFile('images', index)}
-                                        className="absolute top-0 right-0 rounded-full bg-red-500 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                                        className="absolute bottom-20 left-20 rounded-full bg-red-500 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -317,17 +302,19 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
 
             {/* Specifications Section */}
             <div className="col-span-2 mt-6">
-                <h3 className="text-lg font-semibold mb-4">Specifications</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <h3 className="mb-4 text-lg font-semibold">Specifications</h3>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
                         <label className="mb-1 block">Dimensions</label>
                         <input
                             type="text"
                             value={data.specifications?.dimensions || ''}
-                            onChange={(e) => setData('specifications', {
-                                ...data.specifications,
-                                dimensions: e.target.value
-                            })}
+                            onChange={(e) =>
+                                setData('specifications', {
+                                    ...data.specifications,
+                                    dimensions: e.target.value,
+                                })
+                            }
                             className="w-full rounded border px-3 py-2"
                             placeholder="e.g., 200mm x 150mm x 100mm"
                         />
@@ -338,10 +325,12 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
                         <input
                             type="text"
                             value={data.specifications?.weight || ''}
-                            onChange={(e) => setData('specifications', {
-                                ...data.specifications,
-                                weight: e.target.value
-                            })}
+                            onChange={(e) =>
+                                setData('specifications', {
+                                    ...data.specifications,
+                                    weight: e.target.value,
+                                })
+                            }
                             className="w-full rounded border px-3 py-2"
                             placeholder="e.g., 250g"
                         />
@@ -352,10 +341,12 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
                         <input
                             type="text"
                             value={data.specifications?.print_time || ''}
-                            onChange={(e) => setData('specifications', {
-                                ...data.specifications,
-                                print_time: e.target.value
-                            })}
+                            onChange={(e) =>
+                                setData('specifications', {
+                                    ...data.specifications,
+                                    print_time: e.target.value,
+                                })
+                            }
                             className="w-full rounded border px-3 py-2"
                             placeholder="e.g., 12 hours"
                         />
@@ -366,10 +357,12 @@ export default function ProjectForm({ data, setData, errors, processing, handleS
                         <input
                             type="text"
                             value={data.specifications?.print_settings || ''}
-                            onChange={(e) => setData('specifications', {
-                                ...data.specifications,
-                                print_settings: e.target.value
-                            })}
+                            onChange={(e) =>
+                                setData('specifications', {
+                                    ...data.specifications,
+                                    print_settings: e.target.value,
+                                })
+                            }
                             className="w-full rounded border px-3 py-2"
                             placeholder="e.g., 0.2mm layer height, 20% infill"
                         />
